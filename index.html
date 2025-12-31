@@ -121,6 +121,15 @@
       background: rgba(226,237,45,.10);
     }
 
+    /* mobile menu button default hidden */
+    #menuBtn{ display:none; }
+
+    /* Phone/tablet: hide desktop links, show menu button */
+    @media (max-width: 980px){
+      #desktopMenu{ display:none; }
+      #menuBtn{ display:inline-flex; }
+    }
+
     .pill{
       display:inline-flex; align-items:center; gap:10px;
       padding:8px 12px;
@@ -148,7 +157,6 @@
     }
     @media (max-width: 980px){
       .hero-grid{ grid-template-columns:1fr; }
-      .nav-links{ display:none; }
     }
 
     .card{
@@ -505,6 +513,36 @@
       transition: opacity .6s ease, transform .6s ease;
     }
     .reveal.in{ opacity:1; transform: translateY(0); }
+
+    /* ===== Mobile polish (phone-first fixes) ===== */
+    @media (max-width: 600px){
+      .wrap{ width: calc(100% - 28px); }
+
+      .nav-inner{ padding: 12px 0; }
+      .logo{ font-size: 11px; letter-spacing: .16em; }
+
+      .hero{ padding: 34px 0 18px; }
+      .hero-main{ padding: 22px; }
+      h1{ font-size: 38px; }
+      .cta{ gap:10px; }
+      .cta .btn{ width: 100%; padding:12px 14px; font-size:14px; }
+
+      .section-head{ flex-direction: column; align-items:flex-start; }
+      .section-desc{ max-width: 100%; }
+
+      .filters{ gap:10px; }
+      .filters .field{ width: 100%; min-width: 0; }
+      .filters .btn{ width: 100%; }
+
+      .thumb{ height: 340px; }
+      .actions{ flex-direction: column; }
+      .ghost{ width: 100%; padding: 12px 14px; }
+
+      .selected{ flex-direction: column; align-items:flex-start; }
+      .selected .btn{ width: 100%; }
+
+      .modal-bottom .btn{ width: 100%; }
+    }
   </style>
 </head>
 
@@ -540,7 +578,11 @@
         <span>Jedi’s Clothing</span>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
+      <!-- Mobile menu button -->
+      <button class="btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+
+      <!-- Desktop menu -->
+      <nav class="nav-links" aria-label="Primary" id="desktopMenu">
         <a href="#collections">Collections</a>
         <a href="#designs">Designs</a>
         <a href="#process">Process</a>
@@ -555,6 +597,22 @@
       </div>
     </div>
   </header>
+
+  <!-- Mobile dropdown menu -->
+  <div id="mobileMenu" style="display:none;">
+    <div class="wrap" style="padding:12px 0 16px;">
+      <div class="card" style="padding:12px; background: rgba(36,52,71,.18);">
+        <div style="display:grid; gap:8px;">
+          <a class="btn" href="#collections">Collections</a>
+          <a class="btn" href="#designs">Designs</a>
+          <a class="btn" href="#process">Process</a>
+          <a class="btn" href="#reviews">Reviews</a>
+          <a class="btn" href="#faq">FAQ</a>
+          <a class="btn" href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- HERO -->
   <main id="top" class="hero">
@@ -646,7 +704,7 @@
     </div>
   </section>
 
-  <!-- PROCESS / CRAFT -->
+  <!-- PROCESS -->
   <section id="process">
     <div class="wrap">
       <div class="section-head">
@@ -814,8 +872,8 @@
     // Your WhatsApp number: 0536856525  → international format for wa.me is 233536856525
     const WHATSAPP_NUMBER = "233536856525"; // no + sign
 
-    // IMPORTANT: Your images MUST be in: jedsite/images/
-    // Filenames MUST be: design-01.jpg ... design-11.jpg
+    // IMPORTANT: images in: jedsite/images/
+    // Filenames: design-01.jpg ... design-11.jpg
     const DESIGNS = [
       { id:"D01", name:"Design 01", category:"Dress", img:"images/design-01.jpg", desc:"Luxury custom design — made to fit." },
       { id:"D02", name:"Design 02", category:"Gown",  img:"images/design-02.jpg", desc:"Luxury custom design — made to fit." },
@@ -829,6 +887,25 @@
       { id:"D10", name:"Design 10", category:"Dress", img:"images/design-10.jpg", desc:"Luxury custom design — made to fit." },
       { id:"D11", name:"Design 11", category:"Gown",  img:"images/design-11.jpg", desc:"Luxury custom design — made to fit." }
     ];
+
+    // ===== Mobile menu toggle =====
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if(menuBtn && mobileMenu){
+      menuBtn.addEventListener("click", ()=>{
+        const open = mobileMenu.style.display === "block";
+        mobileMenu.style.display = open ? "none" : "block";
+        menuBtn.setAttribute("aria-expanded", String(!open));
+      });
+
+      mobileMenu.querySelectorAll("a").forEach(a=>{
+        a.addEventListener("click", ()=>{
+          mobileMenu.style.display = "none";
+          menuBtn.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
 
     // ===== YEAR + REVEAL =====
     document.getElementById('year').textContent = new Date().getFullYear();
